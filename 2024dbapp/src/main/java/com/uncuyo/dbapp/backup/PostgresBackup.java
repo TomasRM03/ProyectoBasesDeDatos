@@ -7,7 +7,7 @@ package com.uncuyo.dbapp.backup;
 public class PostgresBackup {
     private String host = "localhost";
     private String port = "5432";
-    private String database = "clon";
+    private String database = "uncuyo";
     private String username = "postgres";
     private String password = "1234";
     private String outputPath = "backup.dump";

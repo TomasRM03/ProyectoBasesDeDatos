@@ -4,6 +4,7 @@ com\uncuyo\dbapp\view\MainFrame$11.class
 com\uncuyo\dbapp\view\ModificarUsuario$1.class
 com\uncuyo\dbapp\model\Usuario.class
 com\uncuyo\dbapp\view\JDUsuario$3.class
+com\uncuyo\dbapp\view\NuevaMedicion$4.class
 com\uncuyo\dbapp\model\Medicion.class
 com\uncuyo\dbapp\view\ModificarUsuario$4.class
 com\uncuyo\dbapp\view\MainFrame$14.class
@@ -16,6 +17,7 @@ com\uncuyo\dbapp\view\RealizaDietaTableModel.class
 com\uncuyo\dbapp\view\MainFrame$15.class
 com\uncuyo\dbapp\view\ModificarDieta.class
 com\uncuyo\dbapp\view\DietaUsuario$1.class
+com\uncuyo\dbapp\view\JDUsuario$4$1.class
 com\uncuyo\dbapp\dao\PesajeDAOImp.class
 com\uncuyo\dbapp\backup\PostgresBackup.class
 com\uncuyo\dbapp\view\NuevoPesaje$2.class
@@ -27,6 +29,8 @@ com\uncuyo\dbapp\dao\MedicionDAOImp.class
 com\uncuyo\dbapp\view\JDUsuario$1.class
 com\uncuyo\dbapp\control\DietaController.class
 com\uncuyo\dbapp\view\EliminarUsuario$2.class
+com\uncuyo\dbapp\view\EliminarUsuario$5.class
+com\uncuyo\dbapp\view\JDUsuario$4.class
 com\uncuyo\dbapp\view\ModificarDieta$2.class
 com\uncuyo\dbapp\view\MainFrame$5.class
 com\uncuyo\dbapp\view\UsuarioTableModel.class
@@ -52,12 +56,14 @@ com\uncuyo\dbapp\view\ModificarUsuario$2.class
 com\uncuyo\dbapp\view\NuevoPesaje$1.class
 com\uncuyo\dbapp\view\EliminarDieta$1.class
 com\uncuyo\dbapp\view\NuevaDieta$3.class
+com\uncuyo\dbapp\view\NuevoPesaje$4.class
 com\uncuyo\dbapp\view\NuevaMedicion$3.class
 com\uncuyo\dbapp\view\EliminarUsuario.class
 com\uncuyo\dbapp\view\MainFrame$10.class
 com\uncuyo\dbapp\control\UsuarioController.class
 com\uncuyo\dbapp\view\DietaTableModel.class
 com\uncuyo\dbapp\view\ModificarDieta$4.class
+com\uncuyo\dbapp\view\ModificarUsuario$5.class
 com\uncuyo\dbapp\view\MainFrame$7.class
 com\uncuyo\dbapp\view\EliminarUsuario$3.class
 com\uncuyo\dbapp\view\JDUsuario.class
@@ -66,7 +72,6 @@ com\uncuyo\dbapp\view\NuevaDieta$1.class
 com\uncuyo\dbapp\view\MainFrame$3.class
 com\uncuyo\dbapp\dao\DietaDAO.class
 com\uncuyo\dbapp\view\JDUsuario$2.class
-com\uncuyo\dbapp\view\JDUsuario$3$1.class
 com\uncuyo\dbapp\model\Dieta.class
 com\uncuyo\dbapp\view\MainFrame$13.class
 com\uncuyo\dbapp\view\NuevoPesaje$3.class

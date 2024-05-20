@@ -1,10 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
+
 package com.uncuyo.dbapp.view;
 
-import java.util.Random;
+import javax.swing.JOptionPane;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 /**
  *
@@ -18,9 +19,34 @@ public class JDUsuario extends javax.swing.JDialog {
     public JDUsuario(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-//        Double id =Math.round(1202);
-        Random rdn = new Random();        
-        Long idx=rdn.nextLong();        
+        ((AbstractDocument) txtCuilUsuario.getDocument()).setDocumentFilter(new DocumentFilter() {
+           @Override
+           public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+               if (string == null) {
+                   return;
+               }
+
+               StringBuilder sb = new StringBuilder(txtCuilUsuario.getText());
+               sb.insert(offset, string);
+               if (sb.toString().matches("\\d{0,11}")) {
+                   super.insertString(fb, offset, string, attr);
+               }
+           }
+
+           @Override
+           public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+               if (text == null) {
+                   return;
+               }
+
+               StringBuilder sb = new StringBuilder(txtCuilUsuario.getText());
+               sb.replace(offset, offset + length, text);
+               if (sb.toString().matches("\\d{0,11}")) {
+                   super.replace(fb, offset, length, text, attrs);
+               }
+           }
+       });
+        
     }
     
     public void setMainFrame(MainFrame mainframe){
@@ -188,6 +214,7 @@ public class JDUsuario extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        try {
         String cuil = txtCuilUsuario.getText();
         String nombre = txtNombreUsuario.getText();
         String apellido = txtApellidoUsuario.getText();
@@ -199,6 +226,9 @@ public class JDUsuario extends javax.swing.JDialog {
         String horasDeporte = txtHsDeporteUsuario.getText();
         mainframe.setDatosUsuario(cuil, nombre, apellido, sueno, agua, fechaNacimiento, sexo, genero, horasDeporte);
         this.dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrió un error con los datos ingresados, reintente", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked

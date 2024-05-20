@@ -10,6 +10,7 @@ import com.uncuyo.dbapp.model.Dieta;
 import com.uncuyo.dbapp.model.Medicion;
 import com.uncuyo.dbapp.model.Pesaje;
 import com.uncuyo.dbapp.pdf.ExportPDF;
+import java.awt.Color;
 import java.sql.Date;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -21,6 +22,8 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
+        this.setTitle("Ventana de administrador");
+        setLocationRelativeTo(null);
         iniciarCompVisuales();
     }
 
@@ -185,40 +188,43 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btNuevaDieta)
-                                .addGap(18, 18, 18)
-                                .addComponent(btModificarDieta)
-                                .addGap(18, 18, 18)
-                                .addComponent(btEliminarDieta))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 920, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(dietasusuarios)
+                            .addGap(443, 443, 443))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btNuevaDieta)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(btModificarDieta)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(btEliminarDieta))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 920, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(dietasusuarios)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(realizarbackup)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(importarbackup)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(exportarpdf)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(Recargar))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(btNuevoUsuario)
                                 .addGap(18, 18, 18)
-                                .addComponent(realizarbackup)
+                                .addComponent(btModificar)
                                 .addGap(18, 18, 18)
-                                .addComponent(importarbackup)
+                                .addComponent(btEliminar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(pesaje1)
                                 .addGap(18, 18, 18)
-                                .addComponent(exportarpdf)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(Recargar))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(btNuevoUsuario)
-                            .addGap(18, 18, 18)
-                            .addComponent(btModificar)
-                            .addGap(18, 18, 18)
-                            .addComponent(btEliminar)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(pesaje1)
-                            .addGap(18, 18, 18)
-                            .addComponent(medicion1)))
-                    .addComponent(jLabel1))
+                                .addComponent(medicion1)))))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -381,7 +387,8 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                MainFrame mainframe = new MainFrame();
+                mainframe.setVisible(true);
             }
         });
     }

@@ -5,7 +5,7 @@
     <properties>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <!-- DB Driver -->
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/clon"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/uncuyo"/>
       <!-- BD Mane -->
       <property name="javax.persistence.jdbc.user" value="postgres"/>
       <!-- DB User -->

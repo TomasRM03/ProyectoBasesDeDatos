@@ -18,7 +18,7 @@ public class ExportPDF {
     }
     
     public void exportarPDF() {
-        String url = "jdbc:postgresql://localhost:5432/clon";
+        String url = "jdbc:postgresql://localhost:5432/uncuyo";
         String user = "postgres";
         String password = "1234";
         

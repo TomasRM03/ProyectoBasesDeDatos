@@ -1,6 +1,12 @@
 
 package com.uncuyo.dbapp.view;
 
+import javax.swing.JOptionPane;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+
 /**
  *
  * @author tomas
@@ -12,6 +18,33 @@ public class NuevaMedicion extends javax.swing.JFrame {
      */
     public NuevaMedicion() {
         initComponents();
+        ((AbstractDocument) cuil.getDocument()).setDocumentFilter(new DocumentFilter() {
+           @Override
+           public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+               if (string == null) {
+                   return;
+               }
+
+               StringBuilder sb = new StringBuilder(cuil.getText());
+               sb.insert(offset, string);
+               if (sb.toString().matches("\\d{0,11}")) {
+                   super.insertString(fb, offset, string, attr);
+               }
+           }
+
+           @Override
+           public void replace(DocumentFilter.FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+               if (text == null) {
+                   return;
+               }
+
+               StringBuilder sb = new StringBuilder(cuil.getText());
+               sb.replace(offset, offset + length, text);
+               if (sb.toString().matches("\\d{0,11}")) {
+                   super.replace(fb, offset, length, text, attrs);
+               }
+           }
+       });
     }
 
     /**
@@ -107,11 +140,15 @@ public class NuevaMedicion extends javax.swing.JFrame {
     }
     
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        try {
         String cuil1 = cuil.getText();
         String fecha1 = fecha.getText();
         String altura1 = altura.getText();
         mainframe.insertarMedicion(cuil1, fecha1, altura1);
         this.dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrió un error con la dieta ingresada. Reintente", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
