@@ -85,7 +85,7 @@ public class NuevaMedicion extends javax.swing.JFrame {
 
         jLabel1.setText("Cuil");
 
-        jLabel2.setText("Fecha Pesaje");
+        jLabel2.setText("Fecha Medición");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

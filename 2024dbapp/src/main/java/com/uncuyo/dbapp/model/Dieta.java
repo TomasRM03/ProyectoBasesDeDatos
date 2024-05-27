@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.uncuyo.dbapp.model;
 
 import java.sql.Date;
@@ -21,9 +18,9 @@ import javax.persistence.Table;
 public class Dieta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Integer id;
-    @Column(name="objetivodieta")
+    @Column(name="nrodieta")
+    private Integer nrodieta;
+    @Column(name="objetivo")
     private String objetivodieta;
 
     public Dieta() {
@@ -33,8 +30,8 @@ public class Dieta {
         this.objetivodieta = objetivodieta;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getnrodieta() {
+        return nrodieta;
     }
 
     public String getObjetivodieta() {
@@ -45,13 +42,13 @@ public class Dieta {
         this.objetivodieta = objetivodieta;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setnrodieta(Integer id) {
+        this.nrodieta = id;
     }
     
     @Override
     public String toString() {
-        return "Dieta{" + "id=" + id + ", objetivodieta=" + objetivodieta + '}';
+        return "Dieta{" + "nrodieta=" + nrodieta + ", objetivodieta=" + objetivodieta + '}';
     }
     
     

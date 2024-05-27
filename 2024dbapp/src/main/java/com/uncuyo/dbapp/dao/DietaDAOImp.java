@@ -33,7 +33,7 @@ private static final EntityManagerFactory emf = Persistence.createEntityManagerF
     public void eliminarDieta(Dieta dieta) {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        Dieta a = em.find(Dieta.class,dieta.getId());
+        Dieta a = em.find(Dieta.class,dieta.getnrodieta());
         em.remove(a);
         em.getTransaction().commit();
         em.close();

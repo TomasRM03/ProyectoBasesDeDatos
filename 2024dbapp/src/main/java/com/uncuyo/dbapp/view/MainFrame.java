@@ -56,6 +56,7 @@ public class MainFrame extends javax.swing.JFrame {
         exportarpdf = new javax.swing.JButton();
         pesaje1 = new javax.swing.JButton();
         medicion1 = new javax.swing.JButton();
+        exportarpdf1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -181,6 +182,13 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        exportarpdf1.setText("Exportar Tablas");
+        exportarpdf1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                exportarpdf1MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -210,7 +218,9 @@ public class MainFrame extends javax.swing.JFrame {
                                     .addGap(18, 18, 18)
                                     .addComponent(importarbackup)
                                     .addGap(18, 18, 18)
-                                    .addComponent(exportarpdf)))
+                                    .addComponent(exportarpdf)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(exportarpdf1)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -262,7 +272,8 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(dietasusuarios)
                     .addComponent(realizarbackup)
                     .addComponent(importarbackup)
-                    .addComponent(exportarpdf))
+                    .addComponent(exportarpdf)
+                    .addComponent(exportarpdf1))
                 .addContainerGap(268, Short.MAX_VALUE))
         );
 
@@ -357,42 +368,10 @@ public class MainFrame extends javax.swing.JFrame {
         nuevamedicion.setVisible(true);
     }//GEN-LAST:event_medicion1MouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void exportarpdf1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exportarpdf1MouseClicked
+        pdf.exportTablesPDF(tblUsuarios, tblDietas, "Tablas.pdf");
+    }//GEN-LAST:event_exportarpdf1MouseClicked
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                MainFrame mainframe = new MainFrame();
-                mainframe.setVisible(true);
-            }
-        });
-    }
-    
     public void iniciarCompVisuales(){
         List<Usuario> usuarios = usuarioctrl.getUsuarios();
         usuarioModel = new UsuarioTableModel(usuarios);
@@ -493,6 +472,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton btNuevoUsuario;
     private javax.swing.JButton dietasusuarios;
     private javax.swing.JButton exportarpdf;
+    private javax.swing.JButton exportarpdf1;
     private javax.swing.JButton importarbackup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -640,7 +620,7 @@ class DietaTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Dieta dieta = dietas.get(rowIndex);
         switch (columnIndex) {
-            case 0: return dieta.getId();
+            case 0: return dieta.getnrodieta();
             case 1: return dieta.getObjetivodieta();
             default: return null;
         }
@@ -661,7 +641,7 @@ class DietaTableModel extends AbstractTableModel {
         Dieta dieta = dietas.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                dieta.setId((Integer) value);
+                dieta.setnrodieta((Integer) value);
                 break;
             case 1:
                 dieta.setObjetivodieta((String) value);

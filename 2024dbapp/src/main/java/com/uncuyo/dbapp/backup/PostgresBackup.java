@@ -8,7 +8,7 @@ public class PostgresBackup {
     private String host = "localhost";
     private String port = "5432";
     private String database = "uncuyo";
-    private String username = "postgres";
+    private String username = "administrador";
     private String password = "1234";
     private String outputPath = "backup.dump";
 

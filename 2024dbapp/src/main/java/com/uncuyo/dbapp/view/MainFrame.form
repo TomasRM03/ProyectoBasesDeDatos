@@ -51,6 +51,8 @@
                                   <Component id="importarbackup" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="exportarpdf" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="exportarpdf1" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -117,6 +119,7 @@
                   <Component id="realizarbackup" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="importarbackup" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="exportarpdf" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="exportarpdf1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="268" max="32767" attributes="0"/>
           </Group>
@@ -288,6 +291,14 @@
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="medicion1MouseClicked"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="exportarpdf1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Exportar Tablas"/>
+      </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="exportarpdf1MouseClicked"/>
       </Events>
     </Component>
   </SubComponents>
