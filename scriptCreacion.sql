@@ -37,39 +37,46 @@ FOREIGN KEY (cuil) REFERENCES usuario(cuil)
 
 --Crea tabla dieta
 CREATE TABLE dieta (
-id SERIAL PRIMARY KEY,
-objetivoDieta VARCHAR(50)
+nrodieta SERIAL PRIMARY KEY,
+objetivo VARCHAR(50)
 );
 
 --Crea tabla comida
 CREATE TABLE comida (
-id SERIAL,
-comida VARCHAR(50) PRIMARY KEY
+id SERIAL PRIMARY KEY,
+nombre VARCHAR(50),
+calorias REAL,
+preparacion VARCHAR(300),
+tipo VARCHAR(40)
 );
 
 --Crea tabla dietaTieneComida
 CREATE TABLE dietaTieneComida (
-comida VARCHAR(50),
+nroComida INT,
 nroDieta SERIAL,
-FOREIGN KEY (comida) REFERENCES comida(comida),
-FOREIGN KEY (nroDieta) REFERENCES dieta(id),
-PRIMARY KEY (nroDieta, comida)
+FOREIGN KEY (nroComida) REFERENCES comida(id),
+FOREIGN KEY (nroDieta) REFERENCES dieta(nrodieta),
+PRIMARY KEY (nroDieta, nroComida)
 );
 
 --Crea tabla deporte
 CREATE TABLE deporte (
-id SERIAL,
-nombre VARCHAR(50) PRIMARY KEY
+id SERIAL PRIMARY KEY,
+nombre VARCHAR(50),
+caloriasPorHora REAL,
+tipo VARCHAR(40),
+descripcion VARCHAR(250)
 );
 
 --Crea tabla iniciaDeporte
 CREATE TABLE iniciaDeporte (
 cuil BIGINT,
 fechaInicioDeporte DATE,
-nombreDeporte VARCHAR(50),
+nroDeporte INT,
+cantHorasSemanales REAL,
 PRIMARY KEY (cuil, fechaInicioDeporte),
 FOREIGN KEY (cuil) REFERENCES usuario(cuil),
-FOREIGN KEY (nombreDeporte) REFERENCES deporte(nombre)
+FOREIGN KEY (nroDeporte) REFERENCES deporte(id)
 );
 
 --Crea tabla realizaDieta
@@ -79,7 +86,7 @@ fechaInicio DATE,
 nroDieta SERIAL,
 PRIMARY KEY (cuil, fechaInicio),
 FOREIGN KEY (cuil) REFERENCES usuario(cuil),
-FOREIGN KEY (nroDieta) REFERENCES dieta(id)
+FOREIGN KEY (nroDieta) REFERENCES dieta(nrodieta)
 );
 
 --Crea tabla medicion
@@ -108,6 +115,10 @@ p FLOAT;
 imcc FLOAT;
 a FLOAT;
 f DATE;
+fechaAct DATE;
+nro INT;
+nro2 INT;
+objetivoc VARCHAR(50);
 estadoPesoc VARCHAR(30);
 BEGIN
 SELECT peso INTO p
@@ -126,6 +137,9 @@ LIMIT 1;
 IF f IS NOT NULL THEN
     IF f < NEW.fechamedicion THEN
     a := NEW.altura;
+    fechaAct := NEW.fechaMedicion;
+    ELSE
+    fechaAct := f;
     END IF;
 END IF;
 
@@ -134,19 +148,49 @@ imcc := p / (a * a);
 ELSE
 imcc := NULL;
 END IF;
+
 IF imcc < 18.50 THEN
 estadoPesoc := 'Delgadez';
+objetivoc := 'Control de Peso';
 ELSIF imcc > 24.99 THEN
 estadoPesoc := 'Sobrepeso';
+objetivoc := 'Perdida De Peso';
 ELSEIF imcc >= 18.50 AND imcc <= 24.99 THEN
 estadoPesoc := 'Peso Normal';
+objetivoc := 'Ganancia Muscular';
 ELSE
 estadoPesoc := NULL;
+objetivoc := NULL;
 END IF;
+
 UPDATE usuario
 SET imc = imcc,
 estadopeso = estadoPesoc
 WHERE cuil = NEW.cuil;
+
+SELECT nrodieta
+INTO nro
+FROM dieta
+WHERE objetivo = objetivoc
+LIMIT 1;
+
+SELECT nrodieta
+INTO nro2
+FROM realizadieta
+WHERE cuil = NEW.cuil
+ORDER BY fechainicio DESC
+LIMIT 1;
+
+IF nro2 IS NULL THEN
+    nro2 := 0;
+END IF;
+
+IF nro2 <> nro THEN
+    IF objetivoc IS NOT NULL AND nro IS NOT NULL THEN
+    INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (NEW.cuil, fechaAct, nro);
+    END IF;
+END IF;
+
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -165,7 +209,11 @@ p FLOAT;
 imcc FLOAT;
 a FLOAT;
 f DATE;
+fechaAct DATE;
+nro INT;
+nro2 INT;
 estadoPesoc VARCHAR(30);
+objetivoc VARCHAR(50);
 BEGIN
 SELECT altura INTO p
 FROM medicion
@@ -183,6 +231,9 @@ LIMIT 1;
 IF f IS NOT NULL THEN
     IF f < NEW.fechapesaje THEN
     a := NEW.peso;
+    fechaAct := NEW.fechapesaje;
+    ELSE
+    fechaAct := f;
     END IF;
 END IF;
 
@@ -195,17 +246,46 @@ END IF;
 
 IF imcc < 18.50 THEN
 estadoPesoc := 'Delgadez';
+objetivoc := 'Control de Peso';
 ELSIF imcc > 24.99 THEN
 estadoPesoc := 'Sobrepeso';
+objetivoc := 'Perdida De Peso';
 ELSEIF imcc >= 18.50 AND imcc <= 24.99 THEN
 estadoPesoc := 'Peso Normal';
+objetivoc := 'Ganancia Muscular';
 ELSE
 estadoPesoc := NULL;
+objetivoc := NULL;
 END IF;
+
 UPDATE usuario
 SET imc = imcc,
 estadopeso = estadoPesoc
 WHERE cuil = NEW.cuil;
+
+SELECT nrodieta
+INTO nro
+FROM dieta
+WHERE objetivo = objetivoc
+LIMIT 1;
+
+SELECT nrodieta
+INTO nro2
+FROM realizadieta
+WHERE cuil = NEW.cuil
+ORDER BY fechainicio DESC
+LIMIT 1;
+
+IF nro2 IS NULL THEN
+    nro2 := 0;
+END IF;
+
+IF nro2 <> nro THEN
+    IF objetivoc IS NOT NULL AND nro IS NOT NULL THEN
+    INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (NEW.cuil, fechaAct, nro);
+    END IF;
+END IF;
+
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -217,16 +297,16 @@ FOR EACH ROW
 EXECUTE FUNCTION funcionpesaje();
 
 --Se insertan datos en la tabla deporte
-INSERT INTO deporte (nombre) VALUES ('Fútbol');
-INSERT INTO deporte (nombre) VALUES ('Baloncesto');
-INSERT INTO deporte (nombre) VALUES ('Tenis');
-INSERT INTO deporte (nombre) VALUES ('Voleibol');
-INSERT INTO deporte (nombre) VALUES ('Atletismo');
-INSERT INTO deporte (nombre) VALUES ('Natación');
-INSERT INTO deporte (nombre) VALUES ('Gimnasia');
-INSERT INTO deporte (nombre) VALUES ('Ciclismo');
-INSERT INTO deporte (nombre) VALUES ('Boxeo');
-INSERT INTO deporte (nombre) VALUES ('Hockey');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Fútbol', 400, 'Mixto', 'Deporte de equipo que se juega con una pelota entre dos equipos de once jugadores cada uno');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Baloncesto', 300, 'Mixto', 'Deporte de equipo que se juega con una pelota entre dos equipos de cinco jugadores cada uno');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Tenis', 250, 'Mixto', 'Deporte que se juega con una raqueta y una pelota entre dos jugadores');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Voleibol', 200, 'Mixto', 'Deporte de equipo que se juega con una pelota entre dos equipos de seis jugadores cada uno');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Atletismo', 500, 'Aerobico', 'Deporte que incluye diversas disciplinas como carreras, saltos y lanzamientos');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Natación', 350, 'Mixto', 'Deporte acuático que se practica en piscinas o aguas abiertas');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Gimnasia', 200, 'Mixto', 'Actividad física que combina movimientos corporales, fuerza y flexibilidad');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Ciclismo', 300, 'Aerobico', 'Deporte que se practica con una bicicleta en diferentes terrenos');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Boxeo', 600, 'Mixto', 'Deporte de combate que se practica con golpes de puño');
+INSERT INTO deporte (nombre, caloriasPorHora, tipo, descripcion) VALUES ('Hockey', 400, 'Mixto', 'Deporte de equipo que se juega con un palo y una pelota entre dos equipos de once jugadores cada uno');
 
 --Se insertan datos en la tabla genero
 INSERT INTO genero (genero) VALUES ('Hombre');
@@ -281,73 +361,59 @@ INSERT INTO telefonoUsuario (telefono, cuil) VALUES (2614059283, 20395434579);
 INSERT INTO telefonoUsuario (telefono, cuil) VALUES (2619283650, 27431294856);
 
 --Se insertan datos en la tabla dieta
-INSERT INTO dieta (objetivodieta) VALUES ('Perdida De Peso');
-INSERT INTO dieta (objetivodieta) VALUES ('Ganancia Muscular');
-INSERT INTO dieta (objetivodieta) VALUES ('Control de Peso');
+INSERT INTO dieta (objetivo) VALUES ('Perdida De Peso');
+INSERT INTO dieta (objetivo) VALUES ('Ganancia Muscular');
+INSERT INTO dieta (objetivo) VALUES ('Control de Peso');
 
 --Se insertan datos en la tabla comida
-INSERT INTO comida (comida) VALUES ('Pavo');
-INSERT INTO comida (comida) VALUES ('Pechuga de pollo');
-INSERT INTO comida (comida) VALUES ('Sopa de lentejas');
-INSERT INTO comida (comida) VALUES ('Verduras mixtas');
-INSERT INTO comida (comida) VALUES ('Sopa de verduras');
-INSERT INTO comida (comida) VALUES ('Palta');
-INSERT INTO comida (comida) VALUES ('Pollo a la parrilla');
-INSERT INTO comida (comida) VALUES ('Salmón al horno');
-INSERT INTO comida (comida) VALUES ('Vegetales asados');
-INSERT INTO comida (comida) VALUES ('Tofu');
-INSERT INTO comida (comida) VALUES ('Arroz integral');
-INSERT INTO comida (comida) VALUES ('Carne magra');
-INSERT INTO comida (comida) VALUES ('Huevos duros');
-INSERT INTO comida (comida) VALUES ('Ensalada de garbanzos');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Pavo', 170, 'Cocinar en horno con aceite de oliva', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Pechuga de pollo', 165, 'Cocinar a la plancha con especias', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Sopa de lentejas', 120, 'Cocinar con verduras y especias', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Verduras mixtas', 50, 'Saltear en aceite de oliva', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Sopa de verduras', 80, 'Cocinar con variedad de verduras', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Palta', 160, 'Consumir en rodajas o como guacamole', 'Colación');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Pollo a la parrilla', 180, 'Cocinar en parrilla con condimentos', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Salmón al horno', 220, 'Cocinar en horno con limón y especias', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Vegetales asados', 70, 'Asar en horno con aceite de oliva', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Tofu', 120, 'Cocinar a la plancha con salsa de soja', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Arroz integral', 130, 'Cocinar con agua y sal', 'Colación');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Carne magra', 200, 'Cocinar a la parrilla con especias', 'Plato Principal');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Huevos duros', 140, 'Cocinar en agua hirviendo', 'Colación');
+INSERT INTO comida (nombre, calorias, preparacion, tipo) VALUES ('Ensalada de garbanzos', 180, 'Preparar con garbanzos, verduras y aderezo ligero', 'Plato Principal');
 
 --Se insertan datos en la tabla dietaTieneComida
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Pavo', 1);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Pechuga de pollo', 1);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Sopa de lentejas', 1);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Verduras mixtas', 1);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Sopa de verduras', 2);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Palta', 2);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Pollo a la parrilla', 2);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Salmón al horno', 2);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Vegetales asados', 2);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Salmón al horno', 3);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Tofu', 3);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Pollo a la parrilla', 3);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Arroz integral', 3);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Carne magra', 3);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Huevos duros', 3);
-INSERT INTO dietatienecomida (comida, nrodieta) VALUES ('Ensalada de garbanzos', 3);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (1, 1);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (2, 1);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (3, 1);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (4, 1);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (5, 2);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (6, 2);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (7, 2);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (8, 2);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (9, 2);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (8, 3);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (10, 3);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (7, 3);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (11, 3);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (12, 3);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (13, 3);
+INSERT INTO dietatienecomida (nrocomida, nrodieta) VALUES (14, 3);
 
 --Se insertan datos en la tabla iniciaDeporte
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20451379632,
-'2024-01-05', 'Fútbol');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20403895033,
-'2024-02-26', 'Fútbol');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (27439583490,
-'2024-01-02', 'Baloncesto');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20175983008,
-'2024-03-05', 'Tenis');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (27451374546,
-'2024-05-05', 'Voleibol');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20205983849,
-'2023-12-12', 'Atletismo');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (27334596848,
-'2023-10-05', 'Natación');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20451356438,
-'2022-11-23', 'Gimnasia');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (23464534954,
-'2024-01-24', 'Ciclismo');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20395434579,
-'2024-03-29', 'Boxeo');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (27431294856,
-'2022-08-18', 'Hockey');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20451356438,
-'2020-12-20', 'Gimnasia');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20451379632,
-'2020-12-20', 'Gimnasia');
-INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nombredeporte) VALUES (20451379632,
-'2023-04-27', 'Baloncesto');
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20451379632, '2024-01-05', 1, 4);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20403895033, '2024-02-26', 1, 5);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (27439583490, '2024-01-02', 2, 3);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20175983008, '2024-03-05', 3, 2);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (27451374546, '2024-05-05', 4, 6);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20205983849, '2023-12-12', 5, 1);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (27334596848, '2023-10-05', 6, 7);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20451356438, '2022-11-23', 7, 4);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (23464534954, '2024-01-24', 8, 5);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20395434579, '2024-03-29', 9, 3);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (27431294856, '2022-08-18', 10, 2);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20451356438, '2020-12-20', 7, 1);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20451379632, '2020-12-20', 7, 6);
+INSERT INTO iniciadeporte (cuil, fechainiciodeporte, nrodeporte, cantHorasSemanales) VALUES (20451379632, '2023-04-27', 2, 4);
 
 --Se insertan datos en la tabla mailusuario
 INSERT INTO mailusuario (mail, cuil) VALUES ('tomasrando@gmail.com', 20451379632);
@@ -363,17 +429,7 @@ INSERT INTO mailusuario (mail, cuil) VALUES ('pablohernandez@gmail.com', 2039543
 INSERT INTO mailusuario (mail, cuil) VALUES ('marinatorres@gmail.com', 27431294856);
 
 --Se insertan datos en la tabla realizadieta
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (20451379632, '2024-05-05', 1);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (20403895033, '2023-12-15', 1);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (27439583490, '2023-11-22', 3);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (20175983008, '2024-01-30', 2);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (27451374546, '2023-09-05', 1);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (20205983849, '2023-10-18', 3);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (27334596848, '2024-04-07', 2);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (20451356438, '2024-02-12', 1);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (23464534954, '2023-08-25', 3);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (20395434579, '2023-11-03', 2);
-INSERT INTO realizadieta (cuil, fechainicio, nrodieta) VALUES (27431294856, '2024-03-28', 1);
+--Sustituido por un trigger
 
 --Se insertan datos en la tabla medicion
 INSERT INTO medicion (cuil, fechamedicion, altura) VALUES (20451379632, '2024-05-05', 1.75);
